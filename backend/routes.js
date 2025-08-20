@@ -5,7 +5,7 @@ const path = require('path');
 
 const router = express.Router();
 
-const OPENROUTER_API_KEY = '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';
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const LEADS_FILE = path.join(__dirname, 'leads.json');
 const OPPORTUNITIES_FILE = path.join(__dirname, 'opportunities.json');
 const BLOGPOSTS_FILE = path.join(__dirname, 'blogposts.json');
@@ -397,6 +397,24 @@ router.delete('/blog-posts/:id', (req, res) => {
 
   writeBlogPosts(blogPosts);
   res.status(204).send(); // No Content
+});
+
+// History API
+router.get('/history', (req, res) => {
+  const history = readHistory();
+  res.json(history);
+});
+
+router.post('/history', (req, res) => {
+  const { type, topic, content } = req.body;
+  if (!type || !topic || !content) {
+    return res.status(400).json({ error: 'Type, topic, and content are required' });
+  }
+  const history = readHistory();
+  const newItem = { id: Date.now(), type, topic, content, timestamp: new Date().toISOString() };
+  history.push(newItem);
+  writeHistory(history);
+  res.status(201).json(newItem);
 });
 
 module.exports = router;
