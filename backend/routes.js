@@ -150,6 +150,75 @@ router.post('/generate-article', async (req, res) => {
   }
 });
 
+// Generate Short Script API
+router.post('/generate-short-script', async (req, res) => {
+  const { topic, researchSummary, articleDraft } = req.body;
+
+  try {
+    const script = await callOpenRouter([
+      {
+        role: 'system',
+        content: "You're an intelligent content creator specialized in short-form video scripts. Create engaging, concise scripts for social media platforms like TikTok, Instagram Reels, and YouTube Shorts.",
+      },
+      {
+        role: 'user',
+        content: `Based on this topic: '${topic}' and research: ${researchSummary || 'No research provided'}, create a 30-60 second short video script. Include hook, main points, and call-to-action. Make it engaging and suitable for social media.`,
+      },
+    ]);
+
+    res.json({ script });
+  } catch (error) {
+    console.error('Error generating short script:', error);
+    res.status(500).json({ error: 'Failed to generate short script' });
+  }
+});
+
+// Generate Podcast Script API
+router.post('/generate-podcast-script', async (req, res) => {
+  const { topic, researchSummary, articleDraft } = req.body;
+
+  try {
+    const script = await callOpenRouter([
+      {
+        role: 'system',
+        content: "You're an intelligent podcast script writer. Create engaging, conversational podcast scripts with natural flow, interesting stories, and audience engagement elements.",
+      },
+      {
+        role: 'user',
+        content: `Based on this topic: '${topic}' and research: ${researchSummary || 'No research provided'}, create a 10-15 minute podcast script. Include introduction, main discussion points, examples or stories, and conclusion. Make it conversational and engaging.`,
+      },
+    ]);
+
+    res.json({ script });
+  } catch (error) {
+    console.error('Error generating podcast script:', error);
+    res.status(500).json({ error: 'Failed to generate podcast script' });
+  }
+});
+
+// Generate YouTube Script API
+router.post('/generate-youtube-script', async (req, res) => {
+  const { topic, researchSummary, articleDraft } = req.body;
+
+  try {
+    const script = await callOpenRouter([
+      {
+        role: 'system',
+        content: "You're an intelligent YouTube script writer. Create engaging, structured YouTube video scripts with hooks, clear segments, audience retention elements, and strong calls-to-action.",
+      },
+      {
+        role: 'user',
+        content: `Based on this topic: '${topic}' and research: ${researchSummary || 'No research provided'}, create a 5-10 minute YouTube video script. Include attention-grabbing intro, main content segments, engagement prompts, and strong outro with subscribe call-to-action.`,
+      },
+    ]);
+
+    res.json({ script });
+  } catch (error) {
+    console.error('Error generating YouTube script:', error);
+    res.status(500).json({ error: 'Failed to generate YouTube script' });
+  }
+});
+
 // Leads API
 router.post('/leads', (req, res) => {
   const { name, email, stage } = req.body;
